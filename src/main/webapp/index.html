@@ -1,41 +1,26 @@
 <html ng-app>
 
 <head>
-    <title>Gartenbewässerung</title>
+    <title>Hello Cloud Foundry</title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-    <link href="./css/bootstrap.css" rel="stylesheet">
-    <script type="text/javascript" language="javascript" src="js/logic.js"></script>
-    <script type="text/javascript" src="js/angular.min.js"></script>
-    <script type="text/javascript" src="json/sampledata.js"></script>
-    <script type="text/javascript" src="js/ProgrammController.js"></script>
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/bootstrap-responsive.min.css" rel="stylesheet">
+    <script type="text/javascript" src="js/GeoIpController.js"></script>
 </head>
 
-<body ng-controller="ProgrammController">
-<h1>Gartenbewässerung</h1>
+<body ng-controller="GeoIpController">
+<h1>Hello Cloud Foundry</h1>
 
-<label>Status: {{status.program.status}}</label>
-<br>
-<label for="programStartTime">StartTime:</label><input id="programStartTime" type="text" ng-model="status.program.startTime"/>
+<p class="well">
+    <label>Greetings to: {{country.name}}</label>
+    <br>
+    <button class="btn-small" ng-click="getCountry()">Update</button>
+</p>
 
-<table>
-    <tr>
-        <th>Sprenger</th>
-        <th>Dauer [Minuten]</th>
-        <th>Aktion</th>
-    </tr>
-    <tr ng-repeat="outlet in status.program.outlets" >
-        <td>{{outlet.name}}</td>
-        <td>
-            <input class="input-mini" name="outlet_{{outlet.id}}" type="text" ng-model="outlet.duration" >
-        </td>
-        <td>
-            <label>{{statusToString(outlet.status)}}</label>
-        </td>
-    </tr>
-</table>
+<p>
+    <span class="info" style="font-size: 75%; font-style: italic;">This product includes GeoLite data created by MaxMind, available from http://www.maxmind.com</span>
+</p>
 
-<button class="btn-small" ng-click="startProgram()">Run</button>
-<button class="btn-small" ng-click="getStatus()">Refresh</button>
-
+<script type="text/javascript" src="js/angular.min.js"></script>
 </body>
 </html>
