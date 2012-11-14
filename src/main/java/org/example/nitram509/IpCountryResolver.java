@@ -1,7 +1,6 @@
 package org.example.nitram509;
 
 import java.io.*;
-import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -9,8 +8,14 @@ import static java.lang.Long.parseLong;
 
 public class IpCountryResolver {
 
-    public void init() {
-        List<Country> countries = new ArrayList<Country>();
+    private List<Country> countries;
+
+    public IpCountryResolver() {
+        init();
+    }
+
+    void init() {
+        countries = new ArrayList<Country>();
         try {
             InputStream is = this.getClass().getClassLoader().getResourceAsStream("GeoIPCountryWhois.csv");
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -28,28 +33,59 @@ public class IpCountryResolver {
                 String[] columns = line.split(",");
                 if (columns.length > 5) {
                     Country country = new Country();
-                    country.startIp = parseLong(extractNumbers(columns[2]));
-                    country.code = columns[4];
-                    country.name = columns[5];
+                    country.ipstart = parseLong(extractOnlyNumbers(columns[2]));
+                    country.code = filterQuotes(columns[4]);
+                    country.name = filterQuotes(columns[5]);
                     countries.add(country);
                 }
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            throw new RuntimeException("epic fail", e);
         }
     }
 
-    private String extractNumbers(String column) {
+    private String filterQuotes(String str) {
+        if (str.startsWith("\"")) {
+            str = str.substring(1);
+        }
+        if (str.endsWith("\"")) {
+            str = str.substring(0, str.length() - 1);
+        }
+        return str;
+    }
+
+    private static String extractOnlyNumbers(String column) {
         return column.replaceAll("[^\\d]", "");
     }
 
-    Country resolve(String ip) {
-        init();
+    public Country resolve(String ip) {
+        String[] parts = ip.split("[^\\d]");
+        long target_ip = parseLong(parts[3], 10) +
+                (parseLong(parts[2], 10) * 256) +
+                (parseLong(parts[1], 10) * 65536) +
+                (parseLong(parts[0], 10) * 16777216);
 
-        Country country = new Country();
-        country.name = "nowhere";
-        country.code = "n.n.";
-        return country;
+        int idxMin = 0;
+        int idxMiddle = 0;
+        int idxMax = countries.size() - 1;
+        Country pickedCountry = null;
+        while (idxMin < idxMax) {
+            idxMiddle = (idxMax + idxMin) >> 1;
+            pickedCountry = countries.get(idxMiddle);
+            // determine which subarray to search
+            if (pickedCountry.ipstart < target_ip) {
+                // change min index to search upper subarray
+                idxMin = idxMiddle + 1;
+            } else if (pickedCountry.ipstart > target_ip) {
+                // change max index to search lower subarray
+                idxMax = idxMiddle - 1;
+            } else {
+                // key found at index imid
+                break;
+            }
+        }
+        // return previous found country.
+        return pickedCountry;
     }
 
 }

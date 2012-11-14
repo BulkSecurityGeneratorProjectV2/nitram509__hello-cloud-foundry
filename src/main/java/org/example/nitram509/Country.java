@@ -8,7 +8,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlAccessorType(XmlAccessType.FIELD)
 public class Country {
 
-    long startIp;
+    long ipstart;
     String name;
     String code;
 
