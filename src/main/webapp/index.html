@@ -1,0 +1,41 @@
+<html ng-app>
+
+<head>
+    <title>Gartenbewässerung</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <link href="./css/bootstrap.css" rel="stylesheet">
+    <script type="text/javascript" language="javascript" src="js/logic.js"></script>
+    <script type="text/javascript" src="js/angular.min.js"></script>
+    <script type="text/javascript" src="json/sampledata.js"></script>
+    <script type="text/javascript" src="js/ProgrammController.js"></script>
+</head>
+
+<body ng-controller="ProgrammController">
+<h1>Gartenbewässerung</h1>
+
+<label>Status: {{status.program.status}}</label>
+<br>
+<label for="programStartTime">StartTime:</label><input id="programStartTime" type="text" ng-model="status.program.startTime"/>
+
+<table>
+    <tr>
+        <th>Sprenger</th>
+        <th>Dauer [Minuten]</th>
+        <th>Aktion</th>
+    </tr>
+    <tr ng-repeat="outlet in status.program.outlets" >
+        <td>{{outlet.name}}</td>
+        <td>
+            <input class="input-mini" name="outlet_{{outlet.id}}" type="text" ng-model="outlet.duration" >
+        </td>
+        <td>
+            <label>{{statusToString(outlet.status)}}</label>
+        </td>
+    </tr>
+</table>
+
+<button class="btn-small" ng-click="startProgram()">Run</button>
+<button class="btn-small" ng-click="getStatus()">Refresh</button>
+
+</body>
+</html>
