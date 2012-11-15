@@ -69,7 +69,7 @@ public class IpCountryResolver {
         int idxMiddle = 0;
         int idxMax = countries.size() - 1;
         Country pickedCountry = null;
-        while (idxMin < idxMax) {
+        while (idxMin <= idxMax) {
             idxMiddle = (idxMax + idxMin) >> 1;
             pickedCountry = countries.get(idxMiddle);
             // determine which subarray to search

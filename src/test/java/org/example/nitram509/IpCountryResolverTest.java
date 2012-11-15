@@ -41,10 +41,19 @@ public class IpCountryResolverTest {
     @Test
     public void test_ip_in_the_lower_range_and_rightmost_border() {
         // "1.0.64.0","1.0.127.255","16793600","16809983","JP","Japan"
-        String ip = "1.0.64.0";
+        String ip = "1.0.127.255";
         Country actual = resolver.resolve(ip);
         Assert.assertEquals(actual.name, "Japan");
         Assert.assertEquals(actual.code, "JP");
+    }
+
+    @Test
+    public void test_another() {
+        // "1.9.0.0","1.9.255.255","17367040","17432575","MY","Malaysia"
+        String ip = "1.9.0.0";
+        Country actual = resolver.resolve(ip);
+        Assert.assertEquals(actual.name, "Malaysia");
+        Assert.assertEquals(actual.code, "MY");
     }
 
 
