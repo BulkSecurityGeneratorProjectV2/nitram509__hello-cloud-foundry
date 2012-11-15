@@ -12,4 +12,6 @@ public class Country {
     String name;
     String code;
 
+    String remoteHost;
+
 }
