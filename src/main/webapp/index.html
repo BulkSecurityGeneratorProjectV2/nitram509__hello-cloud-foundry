@@ -1,24 +1,60 @@
 <html ng-app>
 
 <head>
-    <title>Hello Cloud Foundry</title>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-    <link href="css/bootstrap.min.css" rel="stylesheet">
-    <link href="css/bootstrap-responsive.min.css" rel="stylesheet">
-    <script type="text/javascript" src="js/GeoIpController.js"></script>
+  <title>Hello Cloud Foundry</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <link href="css/bootstrap.min.css" rel="stylesheet">
+  <link href="css/bootstrap-responsive.min.css" rel="stylesheet">
+  <link href="css/jquery-jvectormap-1.1.1.css" rel="stylesheet">
+  <script type="text/javascript" src="js/GeoIpController.js"></script>
+  <script type="text/javascript" src="js/jquery-1.8.3.min.js"></script>
+  <script type="text/javascript" src="js/jquery-jvectormap-1.1.1.min.js"></script>
+  <script type="text/javascript" src="js/jquery-jvectormap-world-mill-en.js"></script>
 </head>
 
 <body ng-controller="GeoIpController">
 <h1>Hello Cloud Foundry</h1>
 
 <p class="well">
-    <label>Greetings to: {{country.name}} <small style="font-style: italic; font-size: 75%">(your IP:{{country.remoteHost}})</small></label>
-    <br>
-    <button class="btn-small" ng-click="getCountry()">Locate Me</button>
+  <button class="btn-small" ng-click="getCountry()">Locate Me</button>
+  <br>
+  <label>Greetings to: {{country.name}}
+    <small style="font-style: italic; font-size: 75%">(your IP:{{country.remoteHost}})</small>
+  </label>
 </p>
 
+<div id="map" style="width:800px; height: 500px;" class="well">
+  <!-- will be rendered at runtime -->
+</div>
+<script type="text/javascript">
+
+  //  var gdpData = {
+  //    "AF": 16.63,
+  //    "AL": 11.58,
+  //    "DZ": 158.97
+  //  };
+
+  var _worldmap = new jvm.WorldMap({
+    container:$('#map'),
+    map:'world_mill_en',
+    series:{
+      regions:[
+        {
+//            values:gdpData,
+          scale:['#C8EEFF', '#0071A4'],
+          normalizeFunction:'polynomial'
+        }
+      ]
+    }
+  });
+
+  _worldmap.series.regions[0].setValues({"US":11, "DE":22})
+
+</script>
+
+
 <p>
-    <span class="info" style="font-size: 75%; font-style: italic;">This product includes GeoLite data created by MaxMind, available from http://www.maxmind.com</span>
+  <span class="info" style="font-size: 75%; font-style: italic;">This product includes GeoLite data created by MaxMind, available from http://www.maxmind.com</span>
 </p>
 
 <script type="text/javascript" src="js/angular.min.js"></script>

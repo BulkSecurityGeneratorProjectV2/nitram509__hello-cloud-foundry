@@ -36,10 +36,10 @@
       <version>1.14</version>
     </dependency>
     <dependency>
-        <groupId>org.testng</groupId>
-        <artifactId>testng</artifactId>
-        <version>5.14.2</version>
-        <scope>test</scope>
+      <groupId>org.testng</groupId>
+      <artifactId>testng</artifactId>
+      <version>5.14.2</version>
+      <scope>test</scope>
     </dependency>
   </dependencies>
 
@@ -47,6 +47,24 @@
     <finalName>hello-cloud-foundry</finalName>
 
     <plugins>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-war-plugin</artifactId>
+        <version>2.1.1</version>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-install-plugin</artifactId>
+        <version>2.3.1</version>
+        <executions>
+          <execution>
+            <id>default-install</id>
+            <phase>none</phase>
+          </execution>
+        </executions>
+      </plugin>
 
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
@@ -73,5 +91,16 @@
       </plugin>
     </plugins>
   </build>
+
+  <!-- Using official Maven repo ... uncomment if not ;-) -->
+  <repositories>
+    <repository>
+      <id>UK</id>
+      <name>UK Central</name>
+      <url>http://uk.maven.org/maven2</url>
+    </repository>
+  </repositories>
+
+  <!-- enabling WAR plugin -->
 
 </project>
