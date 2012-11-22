@@ -10,7 +10,7 @@ To give a little context, here are some thoughts:
 There is exactly one use case:
  * When pressing the resolve button, the country is resolved by using the clients IP adress.
  
-This programm can be reached at:
+This program is installed at:
  http://locateme.cloudfoundry.com/
 
  
