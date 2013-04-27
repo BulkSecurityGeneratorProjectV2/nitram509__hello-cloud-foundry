@@ -1,7 +1,7 @@
-package org.example.nitram509;
+package com.github.nitram509.geodatabase;
 
 import static java.lang.Long.parseLong;
-import static org.example.nitram509.CountryDatabaseLoader.createUnknownCountry;
+import static com.github.nitram509.geodatabase.CountryDatabaseLoader.createUnknownCountry;
 
 public class IpCountryResolver {
 

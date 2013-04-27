@@ -1,4 +1,4 @@
-package org.example.nitram509;
+package com.github.nitram509.geodatabase;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -8,11 +8,11 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlAccessorType(XmlAccessType.FIELD)
 public class Country {
 
-  long ipstart;
-  long ipend;
-  String name;
-  String code;
+  public long ipstart;
+  public long ipend;
+  public String name;
+  public String code;
 
-  String remoteHost;
+  public String remoteHost;
 
 }

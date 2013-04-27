@@ -2,8 +2,11 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package org.example.nitram509;
+package com.github.nitram509.servlet;
 
+
+import com.github.nitram509.geodatabase.Country;
+import com.github.nitram509.geodatabase.IpCountryResolver;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.GET;

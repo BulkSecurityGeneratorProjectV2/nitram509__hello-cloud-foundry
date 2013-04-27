@@ -1,4 +1,4 @@
-package org.example.nitram509;
+package com.github.nitram509.geodatabase;
 
 import java.io.*;
 import java.util.ArrayList;
