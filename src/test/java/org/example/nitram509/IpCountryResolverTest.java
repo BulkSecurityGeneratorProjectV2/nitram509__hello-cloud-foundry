@@ -1,60 +1,98 @@
 package org.example.nitram509;
 
 import org.testng.Assert;
-import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.BeforeClass;
+import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
-/**
- * Created with IntelliJ IDEA.
- * User: maki
- * Date: 14.11.12
- * Time: 12:16
- * To change this template use File | Settings | File Templates.
- */
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.List;
+
+import static org.fest.assertions.api.Assertions.assertThat;
+
 public class IpCountryResolverTest {
 
-    private IpCountryResolver resolver;
+  private IpCountryResolver resolver;
 
-    @BeforeMethod
-    public void setup() {
-        resolver = new IpCountryResolver();
+  @BeforeClass
+  public void setup() {
+    resolver = new IpCountryResolver();
+  }
+
+  @DataProvider
+  Object[][] allRecordsFromCsv() throws IOException {
+    List<String[]> recordsToTest = new ArrayList<String[]>();
+    BufferedReader reader = null;
+    try {
+      InputStream csvStream = this.getClass().getResourceAsStream("/GeoIPCountryWhois.csv");
+      reader = new BufferedReader(new InputStreamReader(csvStream));
+      String record;
+      while ((record = reader.readLine()) != null) {
+        String[] dataParts = record.split(",");
+        for (int i = 0; i < dataParts.length; i++) {
+          dataParts[i] = dataParts[i].replace("\"", "");
+        }
+        recordsToTest.add(dataParts);
+      }
+    } catch (Exception e) {
+      Assert.fail("Couldn't prepare data provider", e);
+    } finally {
+      if (reader != null) {
+        reader.close();
+      }
     }
 
-    @Test
-    public void test_ip_in_the_lower_range_and_leftmost_border() {
-        // "1.0.64.0","1.0.127.255","16793600","16809983","JP","Japan"
-        String ip = "1.0.64.0";
-        Country actual = resolver.resolve(ip);
-        Assert.assertEquals(actual.name, "Japan");
-        Assert.assertEquals(actual.code, "JP");
-    }
+    Object[][] recordsToTestArray = recordsToTest.toArray(new Object[recordsToTest.size()][]);
+    int first100RecordsIndex = 0;
+    int middle100RecordsIndex = recordsToTestArray.length / 2 - 50;
+    int last100RecordsIndex = recordsToTestArray.length - 100;
+    Object[][] result = new Object[300][];
+    System.arraycopy(recordsToTestArray, first100RecordsIndex, result, 000, 100);
+    System.arraycopy(recordsToTestArray, middle100RecordsIndex, result, 100, 100);
+    System.arraycopy(recordsToTestArray, last100RecordsIndex, result, 200, 100);
+    return result;
+  }
 
-    @Test
-    public void test_ip_in_the_lower_range_and_middle() {
-        // "1.0.64.0","1.0.127.255","16793600","16809983","JP","Japan"
-        String ip = "1.0.90.90";
-        Country actual = resolver.resolve(ip);
-        Assert.assertEquals(actual.name, "Japan");
-        Assert.assertEquals(actual.code, "JP");
-    }
+  @Test(dataProvider = "allRecordsFromCsv")
+  public void test_couple_of_records_from_original_csv(String ipFrom, String ipTo, String int32From, String int32To, String countryCode, String countryName) {
+    for (String ip : new String[]{ipFrom, ipTo}) {
+      Country actual = resolver.resolve(ip);
 
-    @Test
-    public void test_ip_in_the_lower_range_and_rightmost_border() {
-        // "1.0.64.0","1.0.127.255","16793600","16809983","JP","Japan"
-        String ip = "1.0.127.255";
-        Country actual = resolver.resolve(ip);
-        Assert.assertEquals(actual.name, "Japan");
-        Assert.assertEquals(actual.code, "JP");
+      assertThat(actual.name).isEqualTo(countryName);
+      assertThat(actual.code).isEqualTo(countryCode);
+      assertThat(actual.ipstart).isEqualTo(Long.parseLong(int32From));
+      assertThat(actual.ipend).isEqualTo(Long.parseLong(int32To));
     }
+  }
 
-    @Test
-    public void test_another() {
-        // "1.9.0.0","1.9.255.255","17367040","17432575","MY","Malaysia"
-        String ip = "1.9.0.0";
-        Country actual = resolver.resolve(ip);
-        Assert.assertEquals(actual.name, "Malaysia");
-        Assert.assertEquals(actual.code, "MY");
-    }
+  @Test
+  public void an_unknown_low_ip_will_resolve_to_an_corresponding_country_object() {
+    String ipAsString = "0.1.2.3";
+    long ipAsLong = (1 << 16) + 2 * (1 << 8) + 3;
 
+    Country actual = resolver.resolve(ipAsString);
+
+    assertThat(actual.name).isEqualTo("UNKNOWN");
+    assertThat(actual.code).isEqualTo("N/A");
+    assertThat(actual.ipstart).isEqualTo(ipAsLong);
+    assertThat(actual.ipend).isEqualTo(ipAsLong);
+  }
+
+  @Test
+  public void an_unknown_high_ip_will_resolve_to_an_corresponding_country_object() {
+    String ipAsString = "224.255.255.255";
+    long ipAsLong = 224L * (1 << 24) + 255L * (1 << 16) + 255L * (1 << 8) + 255L;
+
+    Country actual = resolver.resolve(ipAsString);
+
+    assertThat(actual.name).isEqualTo("UNKNOWN");
+    assertThat(actual.code).isEqualTo("N/A");
+    assertThat(actual.ipstart).isEqualTo(ipAsLong);
+    assertThat(actual.ipend).isEqualTo(ipAsLong);
+  }
 
 }
