@@ -17,10 +17,12 @@ import static org.fest.assertions.api.Assertions.assertThat;
 public class IpCountryResolverTest {
 
   private IpCountryResolver resolver;
+  private CountryDatabaseLoader loader;
 
   @BeforeClass
   public void setup() {
     resolver = new IpCountryResolver();
+    loader = new CountryDatabaseLoader();
   }
 
   @DataProvider
@@ -32,7 +34,7 @@ public class IpCountryResolverTest {
       reader = new BufferedReader(new InputStreamReader(csvStream));
       String record;
       while ((record = reader.readLine()) != null) {
-        String[] dataParts = record.split(",");
+        String[] dataParts = loader.extractColumnsFromCsv(record);
         for (int i = 0; i < dataParts.length; i++) {
           dataParts[i] = dataParts[i].replace("\"", "");
         }

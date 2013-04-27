@@ -3,10 +3,14 @@ package com.github.nitram509.geodatabase;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import static java.lang.Long.parseLong;
 
 public class CountryDatabaseLoader {
+
+  public static final Pattern FIND_CSV_COLUMN = Pattern.compile("(\"(?:[^\"]|\"\")*\"|[^,]*)");
 
   public Country[] loadCountries() {
     try {
@@ -37,7 +41,7 @@ public class CountryDatabaseLoader {
     String line;
     long lastRangeEnd = 0;
     while ((line = reader.readLine()) != null) {
-      String[] columns = line.split(",");
+      String[] columns = extractColumnsFromCsv(line);
       if (columns.length > 5) {
         Country country = new Country();
         country.ipstart = parseLong(extractOnlyNumbers(columns[2]));
@@ -51,6 +55,20 @@ public class CountryDatabaseLoader {
     reader.close();
     countries.add(createUnknownCountry(lastRangeEnd + 1));
     return countries;
+  }
+
+  String[] extractColumnsFromCsv(String line) {
+    List<String> result = new ArrayList<String>();
+    for (Matcher matcher; (matcher = FIND_CSV_COLUMN.matcher(line)).find(); ) {
+      String column = line.substring(matcher.start(), matcher.end());
+      result.add(filterQuotes(column));
+      if (matcher.end()+1 > line.length()) {
+        break;
+      } else {
+        line = line.substring(matcher.end()+1);
+      }
+    }
+    return result.toArray(new String[result.size()]);
   }
 
   private static String filterQuotes(String str) {
