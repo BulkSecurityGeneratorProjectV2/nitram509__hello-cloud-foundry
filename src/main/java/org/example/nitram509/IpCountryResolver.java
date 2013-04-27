@@ -12,16 +12,16 @@ public class IpCountryResolver {
     this.countries = loader.loadCountries();
   }
 
-  public Country resolve(String ipString) {
+  public Country lookup(String ipString) {
     final String[] parts = ipString.split("[^\\d]");
     long ip = parseLong(parts[3], 10) +
             (parseLong(parts[2], 10) * 256) +
             (parseLong(parts[1], 10) * 65536) +
             (parseLong(parts[0], 10) * 16777216);
-    return resolve(ip);
+    return lookup(ip);
   }
 
-  public Country resolve(long ip) {
+  public Country lookup(long ip) {
     int idxMin = 0;
     int idxMiddle = 0;
     int idxMax = countries.length - 1;

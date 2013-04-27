@@ -19,11 +19,11 @@ public class Servlet {
     IpCountryResolver ipCountryResolver = new IpCountryResolver();
 
     @GET
-    @Path("resolve")
+    @Path("lookup")
     @Produces({"application/json", "application/xml"})
     public Country getResolve(@Context HttpServletRequest servletRequest, @Context HttpHeaders httpHeaders) {
         String clientIp = findClientIp(servletRequest, httpHeaders);
-        Country country = ipCountryResolver.resolve(clientIp);
+        Country country = ipCountryResolver.lookup(clientIp);
         country.remoteHost = clientIp;
         return country;
     }
