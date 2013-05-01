@@ -13,4 +13,7 @@ There is exactly one use case:
 This program is installed at:
  http://locateme.cloudfoundry.com/
 
- 
+Build Status
+--------------------
+
+[![Build Status](https://travis-ci.org/nitram509/hello-cloud-foundry.png?branch=master)](https://travis-ci.org/nitram509/hello-cloud-foundry)
